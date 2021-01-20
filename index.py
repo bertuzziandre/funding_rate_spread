@@ -49,14 +49,17 @@ if __name__ == "__main__":
     # COINS HNT-PERP HNTUSDT
     # COINS RUNE-PERP RUNEUSDT
     direction = sys.argv[1]
+    spread = 0.0
     print(direction)
 
     if direction == 'open':
         ftx = FtxSocketsHandler('bid')
         binance = BinanceSocketsHandler('ask')
+        spread = (binance.price/ftx.price - 1) * 100
     else:
         ftx = FtxSocketsHandler('ask')
         binance = BinanceSocketsHandler('bid')
+        spread = (ftx.price/binance.price - 1) * 100
 
     ftx.connect()
     ftx.get_ticker('HNT-PERP')
@@ -67,7 +70,7 @@ if __name__ == "__main__":
     while(True):
         try:
             print(
-                f'{datetime.now()}, {(binance.price/ftx.price - 1) * 100},{binance.price},{ftx.price}', flush=True)
+                f'{datetime.now()}, {spread},{binance.price},{ftx.price}', flush=True)
             sleep(10)
         except:
             pass
