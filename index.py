@@ -55,20 +55,19 @@ if __name__ == "__main__":
     if direction == 'open':
         ftx = FtxSocketsHandler('bid')
         binance = BinanceSocketsHandler('ask')
-        spread = (binance.price/ftx.price - 1) * 100
     else:
         ftx = FtxSocketsHandler('ask')
         binance = BinanceSocketsHandler('bid')
-        spread = (ftx.price/binance.price - 1) * 100
 
     ftx.connect()
     ftx.get_ticker('HNT-PERP')
     
     binance.connect()
     binance.get_ticker('HNTUSDT')
-
+    
     while(True):
         try:
+            spread = (binance.price/ftx.price - 1) * 100 if direction == 'open' else (ftx.price/binance.price - 1) * 100
             print(
                 f'{datetime.now()}, {spread},{binance.price},{ftx.price}', flush=True)
             sleep(10)
